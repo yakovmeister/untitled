@@ -1,5 +1,5 @@
 {
-  "name": "shitsuji",
+  "name": "untitled",
   "version": "3.0.10",
   "description": "our mighty butler rewritten using node",
   "main": "bin/index.js",
@@ -15,7 +15,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-
     "anime-scraper": "^2.1.6",
     "async": "^2.4.0",
     "cloudscraper": "^1.4.1",
