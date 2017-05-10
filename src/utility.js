@@ -20,9 +20,16 @@ export default class Utility {
 
             this.io.question(message, (answer) => {
                 resolve(answer);
-                this.io.close();
             });
         });
+    }
+
+    /**
+     * Close readline instance
+     * @return {readline} close()
+     */
+    closeConsole() {
+        return this.io.close();
     }
 
     /**
@@ -41,7 +48,7 @@ export default class Utility {
         if(typeof match == "array" && match < 0) {
             match = source.match(/https:\/\/(.*?).mp4/g);
         }
-        
+
         return match[0];
     }
 }

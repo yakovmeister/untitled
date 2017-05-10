@@ -1,22 +1,15 @@
-import {Anime as anime} from 'anime-scraper';
-import Utility from './utility';
-import async from 'async';
 import co from 'co';
+import Application from './app';
 
-let detail = {};
-let util = new Utility();
+let app = new Application;
 
 co(function * () {
-    let input = yield util.read("Search for an anime: ");
-    console.log(`[SEARCH] Looking for ${input}...`);
-    let animeResult = yield anime.search(input);
-    console.log(`[SEARCH] Complete. Returning results...\n`);
-    console.log(`------------------------------------------`);
+    yield app.run();    
 
-    for(let a in animeResult) {
-        console.log(`[${a}]: ${animeResult[a].name}`);
-    }
+    app.closeConsole();
+    process.exit();
+});
 
-    let x = yield anime.fromUrl(animeResult[3].url);
-    console.log(x);
+process.on('exit', function() {
+    console.log(`[TERMINATE] Closing application...`);
 });
