@@ -4,10 +4,23 @@ import {Anime} from 'anime-scraper';
 export default class Application {
 
     constructor(){
-        this.anime = {};
+        this.anime = {
+            /**
+             * searchKey            - keyword provided by user
+             * searchResult         - results using the keyword provided by user
+             * selectedAnimeIndex   - index defined by user for searchResult
+             * anime                - object containing anime details
+             * episodes             - object containing episode details
+             * episodeSelection     - episode user wants to download
+             */
+        };
         this.utility = new Utility();
     }
-
+    
+    /**
+     * Start the application
+     * 
+     */
     * run() {
         // stage 1: allow user to input the anime they want to watch
         this.anime.searchKey = yield this.utility.read("Search an anime you wanna watch> ");
@@ -20,30 +33,42 @@ export default class Application {
         // of the chosen anime
         console.log(`[SEARCH] Search complete... displaying results...\n`);
         console.log(`---------------------------------------------------`);
-        this.displayAnime(this.anime.searchResult);
+        this.displayList(this.anime.searchResult);
         this.anime.selectedAnimeIndex = yield this.utility.read("Insert anime index> ");
 
         // stage 4: get episodes
         console.log(`[ANIME] Getting Episodes...\n`);
-        this.anime.episodes = yield Anime.fromUrl(this.anime.searchResult[this.anime.selectedAnimeIndex].url);
-        
+        this.anime.anime = yield Anime.fromUrl(this.anime.searchResult[this.anime.selectedAnimeIndex].url);
+        this.anime.episodes = yield this.anime.anime['episodes'];
+
         // stage 5: display episodes
         console.log(`[ANIME] Displaying Episodes...\n`);
-        this.displayAnimeEpisodes(yield this.anime.episodes['episodes']);
+        this.displayList(yield this.anime.episodes);
+        this.anime.episodeSelection = yield this.utility.read("Select episode: ");
+ 
+        console.log(`[DOWN] Fetching Download Page, Matte kudasai...\n`);
+        let page = yield this.utility.downloadPage(this.anime.episodes[this.anime.episodeSelection].url);
+
+        console.log(`[DOWN] Scraping links...`);
+        console.log(page);
+        let downloadURI = this.utility.scrapeMP4(page);
+        console.log(downloadURI);
+
     }
 
-    displayAnime(searchResult) {
-        for(let index in searchResult) {
-            console.log(`[${index}]:${searchResult[index].name}`);
+    /**
+     * Display list in ordered manner
+     * @param {object} list object containing anime information
+     */
+    displayList(list) {
+        for(let index in list) {
+            console.log(`[${index}]:${list[index].name}`);
         }
     }
 
-    displayAnimeEpisodes(episodes) {
-        for(let index in episodes) {
-            console.log(`[${index}]:${episodes[index].name}`);
-        }
-    }
-
+    /**
+     * Close readline object
+     */
     closeConsole() {
         this.utility.closeConsole();
     }

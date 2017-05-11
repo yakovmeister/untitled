@@ -1,4 +1,5 @@
 import readline from 'readline';
+import cloudscraper from 'cloudscraper';
 
 export default class Utility {
     constructor() {
@@ -13,7 +14,7 @@ export default class Utility {
      * @param {string} message
      * @param {function} callback
      */
-    read(message) {
+    read(message = ": ") {
         return new Promise((resolve, reject) => {    
             if(typeof message != "string")
                reject(new Error(`read: first argument is expecting a string ${typeof message} given.`)); 
@@ -50,5 +51,20 @@ export default class Utility {
         }
 
         return match[0];
+    }
+
+    /**
+     * 
+     * @param {string} url
+     * @return {Promise}
+     */
+    * downloadPage(url) {
+        return new Promise((resolve, reject) => {
+            cloudscraper.get(url, (error, response, body) => {
+                if(error) reject(error);
+
+                resolve(body);
+            });
+        });
     }
 }
