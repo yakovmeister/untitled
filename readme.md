@@ -1,3 +1,3 @@
 # butler
 
-- cumming soon.
+- Discontinued due to kissanime's captcha mechanism.
